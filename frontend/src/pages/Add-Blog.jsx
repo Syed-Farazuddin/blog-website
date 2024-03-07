@@ -12,17 +12,14 @@ function AddBlog() {
 
   const handleSubmit = async () => {
     const response = isEdit
-      ? await axios.post("http://localhost:4000/api/blogs/add", {
+      ? await axios.post("http://localhost:4000/add", {
           title: formData?.title,
           description: formData?.description,
         })
-      : axios.put(
-          `http://localhost:4000/api/blogs/update/${location?.state?._id}`,
-          {
-            title: formData.title,
-            description: formData.description,
-          }
-        );
+      : axios.put(`http://localhost:4000/update/${location?.state?._id}`, {
+          title: formData.title,
+          description: formData.description,
+        });
     const result = await response.data;
     console.log(result);
     if (result) {
@@ -37,7 +34,6 @@ function AddBlog() {
 
   useEffect(() => {
     console.log(location);
-    // setIsEdit(true);
     console.log(isEdit);
     setFormData({
       title: location?.state?.title,

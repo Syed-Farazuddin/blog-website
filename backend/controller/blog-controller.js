@@ -1,13 +1,12 @@
 const mongoose = require("mongoose");
 
 const Blog = require("../model/Blog");
-
 // Fetch blogs
 
 const fetchBlogs = async (req, res) => {
   let blogList;
   try {
-    blogList = await Blog.find();
+    blogList = await Blog.find({});
   } catch (e) {
     console.log(e);
   }
@@ -25,27 +24,27 @@ const createBlog = async (req, res) => {
   console.log("Got a request to create a blog");
   const { title, description } = req.body;
   console.log(title, description);
-  const currentDate = new date();
-  res.json({ title, description, currentDate });
-  // const newBlog = new Blog({
-  //   title,
-  //   description,
-  //   date: currentDate,
-  // });
-  // try {
-  //   await newBlog.save();
-  // } catch (e) {
-  //   console.log(e);
-  // }
-  // try {
-  //   const session = await mongoose.startSession();
-  //   session.startTransaction();
-  //   await newBlog.save(session);
-  //   session.commitTransaction();
-  // } catch (e) {
-  //   return res.send(500).json({ message: e });
-  // }
-  // return res.status(200).json({ newBlog });
+  const date = new Date();
+  res.json({ title, description, date });
+  const newBlog = new Blog({
+    title,
+    description,
+    date,
+  });
+  try {
+    await newBlog.save();
+  } catch (e) {
+    console.log(e);
+  }
+  try {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    await newBlog.save(session);
+    session.commitTransaction();
+  } catch (e) {
+    return res.send(500).json({ message: e });
+  }
+  return res.status(200).json({ newBlog });
 };
 
 // Delete blogs
@@ -86,4 +85,4 @@ const UpdateBlog = async (req, res) => {
   return res.send(200).json({ currBlogToUpdate });
 };
 
-module.exports = { fetchBlogs, createBlog, UpdateBlog, deleteBlog };
+module.exports = { fetchBlogs, UpdateBlog, deleteBlog, createBlog };
